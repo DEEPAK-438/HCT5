@@ -1,0 +1,76 @@
+from datetime import datetime
+
+# Sample data for charging stations
+charging_stations = [
+    {"id": 1, "location": "Downtown", "type": "Fast", "available_slots": 5},
+    {"id": 2, "location": "Uptown", "type": "Standard", "available_slots": 3},
+    {"id": 3, "location": "Suburbs", "type": "Fast", "available_slots": 2},
+    {"id": 4, "location": "City Center", "type": "Standard", "available_slots": 0},
+]
+
+def find_stations(filter_type=None):
+    """Find and list charging stations with optional filter for type."""
+    # Filter stations based on the type if provided
+    stations = charging_stations
+    if filter_type:
+        stations = [station for station in stations if station["type"] == filter_type]
+
+    # Print station details or indicate no stations found
+    if not stations:
+        print("No charging stations found.")
+    else:
+        for station in stations:
+            print(f"Station ID: {station['id']}, Location: {station['location']}, "
+                  f"Type: {station['type']}, Available Slots: {station['available_slots']}")
+
+def book_slot(station_id, time_slot):
+    """Book a charging slot at a specific station."""
+    # Find the station by ID
+    station = next((s for s in charging_stations if s["id"] == station_id), None)
+    if not station:
+        print("Station not found.")
+        return
+    
+    # Check availability and book the slot if possible
+    if station["available_slots"] > 0:
+        station["available_slots"] -= 1
+        print(f"Slot booked at {station['location']} for {time_slot}.")
+    else:
+        print("No available slots at this station.")
+
+# Main script to interact with the user
+
+def main():
+    while True:
+        print("\nOptions:")
+        print("1. Find charging stations")
+        print("2. Book a slot")
+        print("3. Exit")
+        
+        choice = input("Enter your choice (1/2/3): ")
+        
+        if choice == "1":
+            filter_type = input("Enter the type of charging station to filter by (Fast/Standard) or leave empty for all: ")
+            print("\nCharging stations:")
+            find_stations(filter_type if filter_type else None)
+        
+        elif choice == "2":
+            try:
+                station_id = int(input("Enter the station ID to book a slot: "))
+                time_slot = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                print("\nBooking a slot:")
+                book_slot(station_id, time_slot)
+            except ValueError:
+                print("Invalid station ID. Please enter a number.")
+        
+        elif choice == "3":
+            print("Exiting the program.")
+            break
+        
+        else:
+            print("Invalid choice. Please enter 1, 2, or 3.")
+
+# Run the main function
+if __name__ == "__main__":
+    main()
+
